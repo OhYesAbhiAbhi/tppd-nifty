@@ -1,0 +1,10 @@
+[Unit]
+Description=P&L calendar page
+After=network.target
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/algo
+ExecStart=/home/ubuntu/algo/venv/bin/python /home/ubuntu/algo/pnl_web.py
+Restart=always
+[Install]
+WantedBy=multi-user.target

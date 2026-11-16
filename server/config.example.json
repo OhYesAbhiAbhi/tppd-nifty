@@ -1,0 +1,108 @@
+{
+  "api_key": "",
+  "api_secret": "",
+  "strategy": "straddle",
+  "strangle_offset": 150,
+  "lots": 1,
+  "entry_time": "09:20",
+  "exit_time": "15:15",
+  "sl_pct": 0.3,
+  "sl_limit_buffer_pct": 0.05,
+  "max_daily_loss_rs": 15000,
+  "use_next_expiry_on_expiry_day": true,
+  "product": "MIS",
+  "entry_slippage_pct": 0.01,
+  "exit_slippage_pct": 0.02,
+  "poll_seconds": 5,
+  "trade_days": [
+    0,
+    1
+  ],
+  "paper": false,
+  "fast_poll_seconds": 1.2,
+  "sl_chase_seconds": 2,
+  "web_port": 8000,
+  "public_url": "http://3.106.111.8:8000",
+  "min_margin_rs": 175000,
+  "web_key": "",
+  "telegram_token": "",
+  "telegram_chat_id": 0,
+  "telegram_group_chat_id": 0,
+  "extras": {
+    "paper": false,
+    "sx_fly": {
+      "enabled": true,
+      "lots": 1,
+      "paper": false,
+      "morning_stop": "confirm"
+    },
+    "sx_thu": {
+      "enabled": true,
+      "lots": 1,
+      "paper": false
+    },
+    "nf_fly": {
+      "enabled": true,
+      "lots": 1,
+      "paper": false,
+      "morning_stop": "confirm",
+      "exit_time": "09:18"
+    },
+    "nf_mon": {
+      "enabled": true,
+      "paper": false,
+      "lots": 1,
+      "morning_stop": "confirm"
+    },
+    "bn_wed": {
+      "enabled": true,
+      "lots": 1,
+      "paper": false
+    },
+    "sx_wknd": {
+      "enabled": true,
+      "lots": 1,
+      "paper": false,
+      "morning_stop": "confirm",
+      "exit_time": "09:18"
+    },
+    "nfw_fly": {
+      "morning_stop": "confirm"
+    },
+    "nff_fly": {
+      "morning_stop": "confirm"
+    },
+    "sxf_fly": {
+      "morning_stop": "confirm"
+    }
+  },
+  "exit_time_by_day": {
+    "0": "15:10"
+  },
+  "schedule": {
+    "expiry": {
+      "time": "09:20"
+    },
+    "0": {
+      "time": "11:30"
+    },
+    "1": {
+      "time": "09:20"
+    },
+    "2": {
+      "time": "10:45",
+      "vix_calm": true
+    },
+    "3": {
+      "time": "10:45",
+      "vix_calm": true
+    },
+    "4": {
+      "time": "10:45",
+      "vix_calm": true
+    }
+  },
+  "move_to_cost_days": [
+    0
+  ]
+}
