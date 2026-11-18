@@ -27,3 +27,4 @@
 0 8 * * 1 cd /home/ubuntu/algo && venv/bin/python bias.py exit sxf_fly >> cron_extras.log 2>&1 # bias
 0 8 * * 1 cd /home/ubuntu/algo && venv/bin/python bias.py exit sx_fri_bias >> cron_extras.log 2>&1 # bias
 5 * * * 1-5 cd /home/ubuntu/algo && venv/bin/python pnl_sync.py >> cron_pnl.log 2>&1 # pnl
+*/5 * * * 1-5 cd /home/ubuntu/algo && venv/bin/python btst.py run >> cron_btst.log 2>&1 # btst
