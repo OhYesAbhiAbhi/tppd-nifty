@@ -36,7 +36,8 @@ FLY = {   # injected into extras.DEFAULTS so extras' enter/exit/stop code runs t
                 "move_to_cost": False, "min_days": 1, "max_days": 7, "morning_stop": "tick"},
     "nff_fly": {"enabled": True, "paper": None, "lots": 1, "kind": "fly", "index": "NIFTY", "weekday": 4,
                 "entry_time": "15:15", "exit_time": "09:18", "wing_points": 500, "stop_pct": 30,
-                "move_to_cost": False, "min_days": 1, "max_days": 7, "morning_stop": "tick"},
+                "move_to_cost": False, "min_days": 1, "max_days": 7, "morning_stop": "tick",
+                "index_confirm_pts": 100},   # v16: Monday stop needs Nifty 100 pts against the leg (AlgoTest 23 Nov)
     "sxf_fly": {"enabled": True, "paper": None, "lots": 1, "kind": "fly", "index": "SENSEX", "weekday": 4,
                 "entry_time": "15:15", "exit_time": "09:18", "wing_points": 1000, "stop_pct": 30,
                 "move_to_cost": False, "min_days": 1, "max_days": 7, "morning_stop": "tick"},
