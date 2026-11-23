@@ -456,9 +456,24 @@ def gap_against(gap, k):
     return None if gap is None else (gap if k == "short_ce" else -gap)
 
 
-def watch(kite, cfg, name, s, st, until, on_close=False, confirm_until=None, gap=None):
+def index_move_against(kite, s, st, k):
+    """Index points moved against short leg k since entry (up hurts the call, down hurts the put); None if unknown."""
+    if not st.get("spot"):
+        return None
+    key = INDEX[s["index"]]["spot"]
+    try:
+        spot = float(kite.ltp([key])[key]["last_price"])
+    except Exception:
+        return None
+    return round((spot - float(st["spot"])) if k == "short_ce" else (float(st["spot"]) - spot), 2)
+
+
+def watch(kite, cfg, name, s, st, until, on_close=False, confirm_until=None, gap=None, index_pts=None):
     """Stop each short leg at entry*(1+stop); with move_to_cost, after the first stop the other short's stop = its entry.
-    on_close=True: check once a minute, just after the minute turns (the 1-minute close), not every tick."""
+    on_close=True: check once a minute, just after the minute turns (the 1-minute close), not every tick.
+    index_pts (v16, next-morning only): a premium stop fires only if the index has also moved at least this many points
+    against the leg since entry, so an option-price spike with a flat index is ignored. If the index can't be read,
+    the stop fires as before."""
     mult = 1 + s["stop_pct"] / 100.0
     first = True
     while now() < until:
@@ -479,6 +494,17 @@ def watch(kite, cfg, name, s, st, until, on_close=False, confirm_until=None, gap
             level = L.get("stop") or L["entry"] * mult
             p = px[L["symbol"]]
             if p >= level:
+                if index_pts:
+                    against = index_move_against(kite, s, st, k)
+                    if against is not None and against < float(index_pts):
+                        if not L.get("spike_alerted"):
+                            L["spike_alerted"] = True; save_state(name, st)
+                            log(name, f"spike ignored {L['symbol']}: ltp {p} >= {level:.2f} but {s['index']} moved only "
+                                      f"{against} pts against (needs {index_pts})")
+                            telegram(cfg, name, f"option spike ignored on {L['symbol']}: price {p} over stop {level:.2f}, "
+                                                f"but {s['index']} only {against} pts against the leg (stop needs {index_pts})")
+                        continue
+                    log(name, f"index confirms stop {L['symbol']}: {s['index']} {against} pts against (needs {index_pts})")
                 if confirm_until and now() < confirm_until:
                     against = gap_against(gap, k)
                     if against is not None and against >= float(s.get("gap_fast_pct", 0.15)):
@@ -735,14 +761,15 @@ def cmd_exit(name):
         wait_until(at("09:15", 2))
         gap = opening_gap(kite, s)
         log(name, f"morning stop: {s['index']} gap {gap}%, book check until " + s.get("confirm_until", "09:16"))
-        watch(kite, cfg, name, s, st, at(s["exit_time"]), confirm_until=at(s.get("confirm_until", "09:16")), gap=gap)
+        watch(kite, cfg, name, s, st, at(s["exit_time"]), confirm_until=at(s.get("confirm_until", "09:16")), gap=gap,
+              index_pts=s.get("index_confirm_pts"))
     elif mode == "tick":
         wait_until(at("09:15", 2))
-        watch(kite, cfg, name, s, st, at(s["exit_time"]))
+        watch(kite, cfg, name, s, st, at(s["exit_time"]), index_pts=s.get("index_confirm_pts"))
     else:                                             # "close": 1-minute closes from 09:16, skips the opening ticks
         wait_until(at(s.get("morning_stop_start", "09:16"), 1))
         log(name, "morning stop: checking 1-minute closes")
-        watch(kite, cfg, name, s, st, at(s["exit_time"]), on_close=True)
+        watch(kite, cfg, name, s, st, at(s["exit_time"]), on_close=True, index_pts=s.get("index_confirm_pts"))
     wait_until(at(s["exit_time"]))
     finish(kite, cfg, name, s, st)
 
